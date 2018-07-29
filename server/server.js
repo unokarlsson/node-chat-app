@@ -21,16 +21,16 @@ let io = socketIO(server);
 io.on('connection',(socket) => {
     console.log('New user connected!');
 
-    socket.emit('newMessage',{
-        from: 'uno@karlsson.com',
-        text: 'What is going on.',
-        createdAt: Date.now()
-    });
+    // socket.emit('newMessage',{
+    //     from: 'uno@karlsson.com',
+    //     text: 'What is going on.',
+    //     createdAt: Date.now()
+    // });
 
     socket.on('createMessage',(message) => {
         console.log('Create message',message);
-        message.creatdAt = Date.now();
-        socket.emit('newMessage',message);
+        message.creatdAt = Date.now(); // or new Date().getTime()
+        io.emit('newMessage',message); 
     });
 
 
