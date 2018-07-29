@@ -21,6 +21,19 @@ let io = socketIO(server);
 io.on('connection',(socket) => {
     console.log('New user connected!');
 
+    const timestamp = Date.now();
+    socket.emit('newMessage',{
+        from: 'Admin',
+        text: 'Welcome to the chat app!',
+        createdAt: timestamp
+    });
+    socket.broadcast.emit('newMessage',
+    {
+        from: 'Admin',
+        text:'New user joined!',
+        createdAt: timestamp
+    });
+
     // socket.emit('newMessage',{
     //     from: 'uno@karlsson.com',
     //     text: 'What is going on.',
@@ -30,7 +43,8 @@ io.on('connection',(socket) => {
     socket.on('createMessage',(message) => {
         console.log('Create message',message);
         message.creatdAt = Date.now(); // or new Date().getTime()
-        io.emit('newMessage',message); 
+        io.emit('newMessage',message);
+        // socket.broadcast.emit('newMessage',message);
     });
 
 
