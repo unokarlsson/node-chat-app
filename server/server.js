@@ -4,7 +4,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage,generateLocationMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname,'../public');
 // console.log('Old way          = ',__dirname + '/../public');
@@ -30,6 +30,11 @@ io.on('connection',(socket) => {
         console.log('Create message',message);
         io.emit('newMessage',generateMessage(message.from,message.text));
         callback('This is from the server.');
+    });
+
+    
+    socket.on('createLocationMessage',(coords) => {
+        io.emit('newLocationMessage',generateLocationMessage('Admin',coords.latitude,coords.longitude));
     });
 
     socket.on('disconnect',() =>{
