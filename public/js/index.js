@@ -1,5 +1,21 @@
 // Makes a request to the server to open a connection
 let socket = io();
+
+function scrollToBottom() {
+    const messages = jQuery('#messages');
+    const newMessage = messages.children('li:last-child');
+
+    const clientHeight  = messages.prop('clientHeight');
+    const scrollTop     = messages.prop('scrollTop');
+    const scrollHeight  = messages.prop('scrollHeight');
+    const newMessageHeight  = newMessage.innerHeight();
+    const lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop +  newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 socket.on('connect', function() {
     console.log('Connected to server!');
 });
@@ -10,13 +26,14 @@ socket.on('disconnect',function() {
 
 socket.on('newMessage',function(message) {
     const formattedTime = moment(message.createdAt).format('h:mm a');
-    let template = jQuery('#message-template').html();
-    let html = Mustache.render(template,{
+    const template = jQuery('#message-template').html();
+    const html = Mustache.render(template,{
         from: message.from,
         text: message.text,
         createdAt: formattedTime
     });
     jQuery('#messages').append(html);
+    scrollToBottom();
 });
 
 socket.on('newLocationMessage',function(message) {
@@ -28,6 +45,7 @@ socket.on('newLocationMessage',function(message) {
         createdAt: formattedTime
     });
     jQuery('#messages').append(html);
+    scrollToBottom();
 
     // let listItem = jQuery('<li></li>');
     // let anchar = jQuery('<a target="_blank">My current location</a>')
