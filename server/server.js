@@ -31,7 +31,11 @@ io.on('connection',(socket) => {
         if(!isRealString(params.name) || !isRealString(params.room)) {
             return callback('Name and room name is required!');
         }
-        socket.join(params.room);
+
+        // Make sure that there are unique user names.
+        if(users.getUserByName(params.name)) {
+            return callback(`Name ${params.name} already taken!`);
+        }
 
         // To leave use socket.join(params.room);
         // To send messages to a specific group use
@@ -39,9 +43,15 @@ io.on('connection',(socket) => {
         // socket.broadcast.to(<gorup>).emit(...); vs // socket.boadcast.emit(...);
         // socket.emit(...) targets a specific user.
 
+        // Make sure that room names don't depend on upper/lower case.
+        const userRoom = params.room.toLowerCase();
+        console.log(`userRoom = ${userRoom}`);
+
+        socket.join(userRoom);
+
         users.removeUser(socket.id);
-        users.addUser(socket.id,params.name,params.room);
-        io.to(params.room).emit('updateUserList',users.getUserList(params.room));
+        users.addUser(socket.id,params.name,userRoom);
+        io.to(userRoom).emit('updateUserList',users.getUserList(userRoom));
 
         socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app!'));
         socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin',`${params.name} has joined!`));    

@@ -59,6 +59,17 @@ describe('Users',() => {
     });
 
 
+    it('Should find user by name',() => {
+        let user = users.getUserByName('Uno');
+        expect(user).toBe(users.users[0]);
+    });
+
+    it('Should not find user by name',() => {
+        let user = users.getUserByName('Ulf');
+        expect(user).toBeFalsy();
+    });
+
+
     it('Should return names for Node course',() => {
         let names = users.getUserList('Node course');
         expect(names).toEqual(['Uno','Marina']);

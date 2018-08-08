@@ -12,6 +12,10 @@ class Users {
     getUser(id) {
         return this.users.filter((user) => user.id===id)[0];
     };
+
+    getUserByName(name) {
+        return this.users.filter(user => user.name===name)[0];
+    }
     
     // Return array of names, ['Uno','Marina']
     getUserList(room) {
